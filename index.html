@@ -70,7 +70,42 @@
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <div id="gameover-extra" class="records-extra hidden">
+          <p id="new-record-msg" class="new-record hidden">¡Nuevo récord! Escribe tu nombre</p>
+          <div id="name-entry" class="name-entry hidden">
+            <input id="name-input" type="text" maxlength="12" placeholder="Tu nombre" autocomplete="off" aria-label="Nombre del jugador" />
+            <button id="save-name-btn" type="button" class="small-btn">Guardar</button>
+          </div>
+          <p class="label">TOP 5</p>
+          <ol id="over-records" class="records-list"></ol>
+          <p class="records-stats">Mejor combo: <b id="over-best-combo">0</b> · Líneas máx.: <b id="over-max-lines">0</b></p>
+          <div class="reset-area">
+            <button id="over-reset-btn" type="button" class="small-btn secondary">Resetear récords</button>
+            <span id="over-reset-confirm" class="reset-confirm hidden">¿Seguro?
+              <button id="over-reset-yes" type="button" class="small-btn danger">Sí</button>
+              <button id="over-reset-no" type="button" class="small-btn secondary">No</button>
+            </span>
+          </div>
+        </div>
         <button id="restart-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <div id="start-screen" class="overlay">
+      <div class="overlay-box">
+        <p id="start-title">TETRIS</p>
+        <p class="label">MEJORES PUNTUACIONES</p>
+        <ol id="start-records" class="records-list"></ol>
+        <p class="records-stats">Mejor combo: <b id="start-best-combo">0</b> · Líneas máx.: <b id="start-max-lines">0</b></p>
+        <button id="start-btn" type="button">Jugar</button>
+        <div class="reset-area">
+          <button id="start-reset-btn" type="button" class="small-btn secondary">Resetear récords</button>
+          <span id="start-reset-confirm" class="reset-confirm hidden">¿Seguro?
+            <button id="start-reset-yes" type="button" class="small-btn danger">Sí</button>
+            <button id="start-reset-no" type="button" class="small-btn secondary">No</button>
+          </span>
+        </div>
+        <p class="hint">Pulsa Enter para jugar</p>
       </div>
     </div>
   </div>
