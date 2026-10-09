@@ -121,6 +121,15 @@ body {
   letter-spacing: 1px;
 }
 
+.panel-left {
+  width: 120px;
+}
+
+#hold-section.hold-locked .label {
+  opacity: 0.5;
+}
+
+#hold-canvas,
 #next-canvas {
   display: block;
   border: 1px solid var(--border);

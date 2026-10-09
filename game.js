@@ -32,6 +32,9 @@ const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-canvas');
 const nextCtx = nextCanvas.getContext('2d');
+const holdCanvas = document.getElementById('hold-canvas');
+const holdCtx = holdCanvas.getContext('2d');
+const holdSection = document.getElementById('hold-section');
 const scoreEl = document.getElementById('score');
 const linesEl = document.getElementById('lines');
 const levelEl = document.getElementById('level');
@@ -43,13 +46,17 @@ const themeToggle = document.getElementById('theme-toggle');
 
 let gridColor = '#22222e';
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let hold, canHold;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
 }
 
 function randomPiece() {
-  const type = Math.floor(Math.random() * 7) + 1;
+  return createPiece(Math.floor(Math.random() * 7) + 1);
+}
+
+function createPiece(type) {
   const shape = PIECES[type].map(row => [...row]);
   return { type, shape, x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2), y: 0 };
 }
@@ -146,10 +153,28 @@ function lockPiece() {
 function spawn() {
   current = next;
   next = randomPiece();
+  canHold = true;
   if (collide(current.shape, current.x, current.y)) {
     endGame();
   }
   drawNext();
+  drawHold();
+}
+
+function holdPiece() {
+  if (!canHold) return;
+  if (hold === null) {
+    hold = current.type;
+    spawn();
+  } else {
+    const type = hold;
+    hold = current.type;
+    current = createPiece(type);
+    if (collide(current.shape, current.x, current.y)) endGame();
+  }
+  canHold = false;
+  dropAccum = 0;
+  drawHold();
 }
 
 function updateHUD() {
@@ -209,15 +234,24 @@ function draw() {
       drawBlock(ctx, current.x + c, current.y + r, current.shape[r][c], BLOCK);
 }
 
-function drawNext() {
+function drawPreview(context, cnv, shape, alpha) {
   const NB = 30;
-  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-  const shape = next.shape;
+  context.clearRect(0, 0, cnv.width, cnv.height);
+  if (!shape) return;
   const offX = Math.floor((4 - shape[0].length) / 2);
   const offY = Math.floor((4 - shape.length) / 2);
   for (let r = 0; r < shape.length; r++)
     for (let c = 0; c < shape[r].length; c++)
-      drawBlock(nextCtx, offX + c, offY + r, shape[r][c], NB);
+      drawBlock(context, offX + c, offY + r, shape[r][c], NB, alpha);
+}
+
+function drawNext() {
+  drawPreview(nextCtx, nextCanvas, next.shape);
+}
+
+function drawHold() {
+  drawPreview(holdCtx, holdCanvas, hold ? PIECES[hold] : null, canHold ? 1 : 0.3);
+  holdSection.classList.toggle('hold-locked', !canHold);
 }
 
 function endGame() {
@@ -268,6 +302,8 @@ function init() {
   gameOver = false;
   dropInterval = 1000;
   dropAccum = 0;
+  hold = null;
+  canHold = true;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
@@ -298,6 +334,11 @@ document.addEventListener('keydown', e => {
       e.preventDefault();
       hardDrop();
       break;
+    case 'KeyC':
+    case 'ShiftLeft':
+    case 'ShiftRight':
+      holdPiece();
+      break;
   }
   updateHUD();
 });
@@ -313,7 +354,7 @@ function applyTheme(theme) {
   themeToggle.setAttribute('aria-pressed', String(isLight));
   gridColor = getComputedStyle(document.documentElement).getPropertyValue('--grid').trim() || gridColor;
   // En pausa o Game Over el rAF no corre: redibujar a mano
-  if (current && next) { draw(); drawNext(); }
+  if (current && next) { draw(); drawNext(); drawHold(); }
 }
 
 themeToggle.addEventListener('click', () => {

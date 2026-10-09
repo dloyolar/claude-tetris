@@ -19,6 +19,7 @@ Toda la lógica vive en `game.js` (~300 líneas, `'use strict'`, scope global de
 - `clearLines` también recalcula `level` y `dropInterval` (`max(100, 1000 - (level-1)*90)`); `init` fija `dropInterval = 1000`. Si se cambia la curva de velocidad hay que tocar ambos sitios.
 - Puntuación: `LINE_SCORES[cleared] * level`; soft drop +1 por fila, hard drop +2 por celda.
 - Rotación: `rotateCW` + wall kicks simples en `tryRotate` (desplazamientos `[0, -1, 1, -2, 2]` en X; no hay kicks verticales ni tablas SRS).
+- Hold: `hold` (tipo de pieza o `null`) y `canHold`. `holdPiece()` (teclas `C`/Shift) guarda `current.type` y, si ya había una, la recrea con `createPiece(type)` en orientación de spawn; si el slot estaba vacío llama a `spawn()`. `spawn()` pone `canHold = true`; `holdPiece` lo pone a `false` después. `drawHold()` atenúa el slot (alpha 0.3 + clase `.hold-locked`) mientras está bloqueado. Panel izquierdo en `index.html` (`#hold-canvas`, 4×4 de 30 px como `#next-canvas`).
 - `togglePause` cancela/reanuda el rAF y reutiliza el overlay de Game Over (`#overlay`) cambiando su título.
 
 - Temas: los colores de la UI son variables CSS en `:root` (oscuro, por defecto) y `[data-theme="light"]` en `style.css`. `applyTheme()` (`game.js`) fija `data-theme` en `<html>`, guarda la preferencia en `localStorage` (`tetris-theme`), cachea `--grid` en `gridColor` (usado por `drawGrid`) y fuerza `draw()`/`drawNext()` para que pausa/Game Over se repinten. Un script inline en `<head>` aplica el tema guardado antes de pintar. Al añadir colores nuevos, definirlos en ambos temas.
