@@ -21,6 +21,8 @@ Toda la lógica vive en `game.js` (~300 líneas, `'use strict'`, scope global de
 - Rotación: `rotateCW` + wall kicks simples en `tryRotate` (desplazamientos `[0, -1, 1, -2, 2]` en X; no hay kicks verticales ni tablas SRS).
 - `togglePause` cancela/reanuda el rAF y reutiliza el overlay de Game Over (`#overlay`) cambiando su título.
 
+- Temas: los colores de la UI son variables CSS en `:root` (oscuro, por defecto) y `[data-theme="light"]` en `style.css`. `applyTheme()` (`game.js`) fija `data-theme` en `<html>`, guarda la preferencia en `localStorage` (`tetris-theme`), cachea `--grid` en `gridColor` (usado por `drawGrid`) y fuerza `draw()`/`drawNext()` para que pausa/Game Over se repinten. Un script inline en `<head>` aplica el tema guardado antes de pintar. Al añadir colores nuevos, definirlos en ambos temas.
+
 ## Cosas a tener en cuenta
 
 - Las dimensiones del canvas (`300×600` en `#board`, `COLS*BLOCK × ROWS*BLOCK`) están duplicadas en `index.html`; si cambian `COLS`, `ROWS` o `BLOCK` en `game.js` hay que actualizar `width`/`height` del canvas a mano. El canvas de la siguiente pieza (`#next-canvas`) está dibujado en una cuadrícula fija de 4×4 bloques de 30 px.
