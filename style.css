@@ -9,11 +9,28 @@ body {
   color: #e0e0e0;
   font-family: system-ui, -apple-system, sans-serif;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   user-select: none;
 }
+
+/* ---- Título ---- */
+.title {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.title span:nth-child(1) { color: #4dd0e1; }
+.title span:nth-child(2) { color: #ffd54f; }
+.title span:nth-child(3) { color: #ba68c8; }
+.title span:nth-child(4) { color: #81c784; }
+.title span:nth-child(5) { color: #e57373; }
+.title span:nth-child(6) { color: #ffb74d; }
 
 .wrapper {
   position: relative;
