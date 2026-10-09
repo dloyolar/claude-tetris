@@ -39,6 +39,21 @@
   --grid: #e1e3ec;
 }
 
+/* ---- Skins (deben ir después de los temas para ganar en especificidad igual) ---- */
+[data-skin="neon"] {
+  --board-bg: #000000;
+  --grid: #141428;
+  --border: #1d3a5a;
+  --shadow: rgba(0, 240, 255, 0.35);
+}
+
+[data-skin="neon"][data-theme="light"] {
+  --board-bg: #000000;
+  --grid: #141428;
+  --border: #1d3a5a;
+  --shadow: rgba(0, 120, 200, 0.35);
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -175,6 +190,21 @@ kbd {
 }
 
 #theme-toggle:hover {
+  border-color: var(--value);
+}
+
+/* ---- Selector de skin ---- */
+#skin-select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#skin-select:hover {
   border-color: var(--value);
 }
 

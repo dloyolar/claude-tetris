@@ -14,7 +14,7 @@ Abrir `index.html` en el navegador, o servir la carpeta con cualquier servidor e
 
 Toda la lógica vive en `game.js` (~300 líneas, `'use strict'`, scope global de script, sin módulos). Estado en variables globales (`board`, `current`, `next`, `score`, `lines`, `level`, `paused`, `gameOver`, `dropInterval`, `animId`, etc.) reinicializadas en `init()`.
 
-- Las piezas (`PIECES`) son matrices cuadradas cuyos valores `1–7` son a la vez el tipo de pieza y el índice en `COLORS`. `board` guarda esos mismos índices (`0` = vacío), así que `drawBlock` pinta directamente desde el valor de la celda.
+- Las piezas (`PIECES`) son matrices cuadradas cuyos valores `1–7` son a la vez el tipo de pieza y el índice en `SKINS[skin].colors`. `board` guarda esos mismos índices (`0` = vacío), así que `drawBlock` pinta directamente desde el valor de la celda.
 - Flujo de una pieza: `loop` (rAF, acumula `dropAccum` contra `dropInterval`) o `softDrop`/`hardDrop` → `lockPiece()` → `merge()` → `clearLines()` → `spawn()`. `spawn` promueve `next` a `current`, genera una nueva `next` y llama a `endGame()` si la pieza recién creada ya colisiona.
 - `clearLines` también recalcula `level` y `dropInterval` (`max(100, 1000 - (level-1)*90)`); `init` fija `dropInterval = 1000`. Si se cambia la curva de velocidad hay que tocar ambos sitios.
 - Puntuación: `LINE_SCORES[cleared] * level`; soft drop +1 por fila, hard drop +2 por celda.
@@ -23,6 +23,8 @@ Toda la lógica vive en `game.js` (~300 líneas, `'use strict'`, scope global de
 - `togglePause` cancela/reanuda el rAF y reutiliza el overlay de Game Over (`#overlay`) cambiando su título.
 
 - Temas: los colores de la UI son variables CSS en `:root` (oscuro, por defecto) y `[data-theme="light"]` en `style.css`. `applyTheme()` (`game.js`) fija `data-theme` en `<html>`, guarda la preferencia en `localStorage` (`tetris-theme`), cachea `--grid` en `gridColor` (usado por `drawGrid`) y fuerza `draw()`/`drawNext()` para que pausa/Game Over se repinten. Un script inline en `<head>` aplica el tema guardado antes de pintar. Al añadir colores nuevos, definirlos en ambos temas.
+
+- Skins: `SKINS = { retro, neon, pastel, pixel }` en `game.js`; cada uno tiene `colors[]` (índices 1–7, ya no existe `COLORS` global) y `drawBlock(context,x,y,colorIndex,size,alpha)`. La función global `drawBlock` delega en `currentSkin`. Cada skin usa `save()/restore()` para no filtrar `globalAlpha`/`shadowBlur`. `applySkin(name)` fija `data-skin` en `<html>`, guarda `tetris-skin` en `localStorage`, recachea `gridColor` y repinta a mano (`draw/drawNext/drawHold`). Selector `#skin-select` (`tabindex="-1"`, `blur()` tras cambiar). El fondo/rejilla del tablero se sobreescriben por CSS (`[data-skin="neon"]` fuerza fondo negro, definido tras los temas). Script inline en `<head>` aplica el skin guardado.
 
 ## Cosas a tener en cuenta
 
